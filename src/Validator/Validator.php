@@ -25,7 +25,6 @@ use PhpSPA\Validator\Attributes\Min;
 use PhpSPA\Validator\Attributes\MinItems;
 use PhpSPA\Validator\Attributes\MinLength;
 use PhpSPA\Validator\Attributes\Numeric;
-use PhpSPA\Validator\Attributes\Optional;
 use PhpSPA\Validator\Attributes\Phone;
 use PhpSPA\Validator\Attributes\Regex;
 use PhpSPA\Validator\Attributes\Required;
@@ -63,16 +62,11 @@ final class Validator
          $value = $data[$name] ?? null;
 
          $attributes = $property->getAttributes();
-         $isOptional = self::hasAttribute($attributes, Optional::class);
 
          if (self::isEmpty($value)) {
-            $requiredError = self::resolveRequiredError($attributes, $data, $name);
+            $requiredError = self::resolveRequiredError($attributes, $data, $name, $property);
             if ($requiredError !== null) {
                $errors[$name][] = $requiredError;
-               continue;
-            }
-
-            if ($isOptional) {
                continue;
             }
 
@@ -82,10 +76,6 @@ final class Validator
 
          foreach ($attributes as $attr) {
             $attrInstance = $attr->newInstance();
-
-            if ($attrInstance instanceof Optional) {
-               continue;
-            }
 
             if ($attrInstance instanceof Required || $attrInstance instanceof RequiredIf) {
                continue;
@@ -313,7 +303,7 @@ final class Validator
     * @param array<int, \ReflectionAttribute> $attributes
     * @param array<string, mixed> $data
     */
-   private static function resolveRequiredError(array $attributes, array $data, string $field): ?string
+   private static function resolveRequiredError(array $attributes, array $data, string $field, \ReflectionProperty $property): ?string
    {
       foreach ($attributes as $attr) {
          $instance = $attr->newInstance();
@@ -328,6 +318,10 @@ final class Validator
                return $instance->message;
             }
          }
+      }
+
+      if (!$property->hasDefaultValue()) {
+         return 'This field is required.';
       }
 
       return null;

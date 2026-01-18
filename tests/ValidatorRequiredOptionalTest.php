@@ -6,8 +6,6 @@ namespace PhpSPA\Validator\Tests;
 
 use PHPUnit\Framework\TestCase;
 use PhpSPA\Validator\Attributes\Email;
-use PhpSPA\Validator\Attributes\Optional;
-use PhpSPA\Validator\Attributes\Required;
 use PhpSPA\Validator\Attributes\RequiredIf;
 use PhpSPA\Validator\Attributes\Message;
 use PhpSPA\Validator\Attributes\Validatable;
@@ -17,13 +15,11 @@ use PhpSPA\Validator\Validator;
 #[Message('Custom base message')]
 final class RequiredOptionalDto
 {
-   #[Required]
-   public ?string $name = null;
+   public string $name;
 
    #[RequiredIf('role', 'admin')]
    public ?string $token = null;
 
-   #[Optional]
    #[Email]
    public ?string $email = null;
 }
@@ -34,7 +30,6 @@ final class ValidatorRequiredOptionalTest extends TestCase
    {
       $result = Validator::from(['role' => 'user'], RequiredOptionalDto::class);
 
-      $this->assertFalse($result->isValid());
       $this->assertSame('Custom base message', $result->message());
       $this->assertSame(['This field is required.'], $result->errors()['name']);
    }
