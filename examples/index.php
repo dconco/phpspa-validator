@@ -8,8 +8,6 @@ use PhpSPA\Http\Response;
 use PhpSPA\Http\Router;
 use PhpSPA\Validator\Attributes\Email;
 use PhpSPA\Validator\Attributes\MinLength;
-use PhpSPA\Validator\Attributes\Optional;
-use PhpSPA\Validator\Attributes\Required;
 use PhpSPA\Validator\Attributes\Validatable;
 use PhpSPA\Validator\Validator;
 
@@ -18,18 +16,15 @@ require_once '../vendor/autoload.php';
 #[Validatable]
 final class CreateUserDto
 {
-   #[Required]
    #[Email]
    public string $email;
 
-   #[Required]
    #[MinLength(8)]
    public string $password;
 
    // Optional field with custom per-field message
-   #[Optional]
    #[MinLength(2, message: 'Name must be at least 2 chars')]
-   public string $name;
+   public string $name = 'User';
 }
 
 $app = new App();
@@ -57,7 +52,7 @@ $app->prefix('/api', function (Router $router): void {
 
       return $res->success([
          'email' => $dto->email,
-         'name' => $dto->name ?? null,
+         'name' => $dto->name,
       ]);
    });
 });
