@@ -11,6 +11,8 @@ Attribute-based request validator for PHP (works for all PHP apps or any library
 ## Quick usage
 
 ```php
+<?php
+
 use PhpSPA\Validator\Attributes\Email;
 use PhpSPA\Validator\Attributes\MinLength;
 use PhpSPA\Validator\Attributes\Optional;
