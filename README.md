@@ -30,7 +30,7 @@ final class CreateUserDto
 
 $result = Validator::from($req->json(), CreateUserDto::class);
 
-if (!$result->isValid() || $result->data() === null) {
+if (!$result->isValid()) {
    return $res->validationError($result->errors()); // Return error if request payload isn't valid
 }
 
@@ -56,6 +56,54 @@ Validator::from(['email' => 'me@example.com'], CreateUserDto::class);
 
 // Laravel Request
 Validator::from($request->all(), CreateUserDto::class);
+```
+
+## Laravel model example
+
+```php
+<?php
+
+use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Model;
+use PhpSPA\Validator\Attributes\Boolean;
+use PhpSPA\Validator\Attributes\MinLength;
+use PhpSPA\Validator\Attributes\Validatable;
+use PhpSPA\Validator\Validator;
+
+// --- YOUR LARAVEL MODEL SCHEMA ---
+#[Validatable]
+final class User extends Model
+{
+   #[MinLength(2, message: 'Name must be at least 2 chars')]
+   public string $name = 'user';
+
+   #[Boolean]
+   public string $isAdmin;
+}
+
+// --- YOUR CONTROLLER IMPLEMENTATION ---
+final class UserController
+{
+   public function store(Request $request)
+   {
+      $result = Validator::from($request->all(), User::class);
+
+      if (!$result->isValid()) {
+         return response()->json([
+            'message' => $result->message(),
+            'errors' => $result->errors(),
+         ], 422);
+      }
+
+      /** @var User $user */
+      $user = $result->data();
+
+      return response()->json([
+         'message' => 'Validated',
+         'data' => $user,
+      ]);
+   }
+}
 ```
 
 ## Notes
