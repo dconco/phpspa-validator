@@ -6,15 +6,13 @@ namespace PhpSPA\Validator\Tests;
 
 use PHPUnit\Framework\TestCase;
 use PhpSPA\Validator\ValidationResult;
-use PhpSPA\Validator\Validatable;
 
 final class ValidationResultTest extends TestCase
 {
    public function testValidResultHasNoErrors(): void
    {
-      $dto = new class extends Validatable {
-         public string $name = 'ok';
-      };
+      $dto = new \stdClass();
+      $dto->name = 'ok';
 
       $result = new ValidationResult('All good', [], $dto);
 

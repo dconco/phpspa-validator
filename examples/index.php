@@ -10,12 +10,13 @@ use PhpSPA\Validator\Attributes\Email;
 use PhpSPA\Validator\Attributes\MinLength;
 use PhpSPA\Validator\Attributes\Optional;
 use PhpSPA\Validator\Attributes\Required;
-use PhpSPA\Validator\Validatable;
+use PhpSPA\Validator\Attributes\Validatable;
 use PhpSPA\Validator\Validator;
 
 require_once '../vendor/autoload.php';
 
-final class CreateUserDto extends Validatable
+#[Validatable]
+final class CreateUserDto
 {
    #[Required]
    #[Email]

@@ -10,11 +10,12 @@ use PhpSPA\Validator\Attributes\Optional;
 use PhpSPA\Validator\Attributes\Required;
 use PhpSPA\Validator\Attributes\RequiredIf;
 use PhpSPA\Validator\Attributes\Message;
+use PhpSPA\Validator\Attributes\Validatable;
 use PhpSPA\Validator\Validator;
-use PhpSPA\Validator\Validatable;
 
+#[Validatable]
 #[Message('Custom base message')]
-final class RequiredOptionalDto extends Validatable
+final class RequiredOptionalDto
 {
    #[Required]
    public ?string $name = null;

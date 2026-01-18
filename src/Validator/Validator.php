@@ -34,26 +34,23 @@ use PhpSPA\Validator\Attributes\Timestamp;
 use PhpSPA\Validator\Attributes\Uppercase;
 use PhpSPA\Validator\Attributes\Url;
 use PhpSPA\Validator\Attributes\Uuid;
+use PhpSPA\Validator\Attributes\Validatable;
 use PhpSPA\Validator\Attributes\ValidatableType;
 
 final class Validator
 {
    /**
     * @param array<string, mixed>|object|null $payload
-    * @param class-string<Validatable> $class
+    * @param class-string<object>|object $class
     */
-   public static function from(array|object|null $payload, string $class): ValidationResult
+   public static function from(array|object|null $payload, object|string $class): ValidationResult
    {
-      if (!is_subclass_of($class, Validatable::class)) {
-         throw new \InvalidArgumentException('Validator expects a class extending Validatable.');
-      }
+      $data = $payload === null ? [] : (\is_object($payload) ? get_object_vars($payload) : $payload);
 
-      if ($payload === null) {
-         $data = [];
-      } else {
-         $data = \is_object($payload) ? get_object_vars($payload) : $payload;
-      }
       $reflection = new ReflectionClass($class);
+      if ($reflection->getAttributes(Validatable::class) === []) {
+         throw new \InvalidArgumentException('Class must be marked with #[Validatable] to be validated.');
+      }
       $dto = $reflection->newInstanceWithoutConstructor();
 
       $message = self::resolveMessage($reflection);

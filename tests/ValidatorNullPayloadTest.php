@@ -6,10 +6,11 @@ namespace PhpSPA\Validator\Tests;
 
 use PHPUnit\Framework\TestCase;
 use PhpSPA\Validator\Attributes\Required;
+use PhpSPA\Validator\Attributes\Validatable;
 use PhpSPA\Validator\Validator;
-use PhpSPA\Validator\Validatable;
 
-final class NullPayloadDto extends Validatable
+#[Validatable]
+final class NullPayloadDto
 {
    #[Required]
    public string $email;

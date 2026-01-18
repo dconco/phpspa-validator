@@ -10,7 +10,7 @@ final class ValidationResult
    public function __construct(
       private readonly string $message,
       private readonly array $errors,
-      private readonly ?Validatable $data
+      private readonly ?object $data
    ) {}
 
    public function isValid(): bool
@@ -29,7 +29,7 @@ final class ValidationResult
       return $this->errors;
    }
 
-   public function data(): ?Validatable
+   public function data(): ?object
    {
       return $this->data;
    }

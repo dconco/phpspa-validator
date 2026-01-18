@@ -26,10 +26,11 @@ use PhpSPA\Validator\Attributes\Timestamp;
 use PhpSPA\Validator\Attributes\Uppercase;
 use PhpSPA\Validator\Attributes\Url;
 use PhpSPA\Validator\Attributes\Uuid;
+use PhpSPA\Validator\Attributes\Validatable;
 use PhpSPA\Validator\Validator;
-use PhpSPA\Validator\Validatable;
 
-final class RulesDto extends Validatable
+#[Validatable]
+final class RulesDto
 {
    #[MinLength(3)]
    public string $minLength;

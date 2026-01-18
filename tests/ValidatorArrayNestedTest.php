@@ -9,11 +9,12 @@ use PhpSPA\Validator\Attributes\IsArray;
 use PhpSPA\Validator\Attributes\MinItems;
 use PhpSPA\Validator\Attributes\MaxItems;
 use PhpSPA\Validator\Attributes\Required;
+use PhpSPA\Validator\Attributes\Validatable;
 use PhpSPA\Validator\Attributes\ValidatableType;
 use PhpSPA\Validator\Validator;
-use PhpSPA\Validator\Validatable;
 
-final class ArrayDto extends Validatable
+#[Validatable]
+final class ArrayDto
 {
    #[IsArray]
    public array $tags;
@@ -25,13 +26,15 @@ final class ArrayDto extends Validatable
    public array $maxItems;
 }
 
-final class AddressDto extends Validatable
+#[Validatable]
+final class AddressDto
 {
    #[Required]
    public string $city;
 }
 
-final class UserDto extends Validatable
+#[Validatable]
+final class UserDto
 {
    #[ValidatableType(AddressDto::class)]
    public array $address;

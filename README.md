@@ -15,12 +15,11 @@ use PhpSPA\Validator\Attributes\Email;
 use PhpSPA\Validator\Attributes\MinLength;
 use PhpSPA\Validator\Attributes\Optional;
 use PhpSPA\Validator\Attributes\Required;
-use PhpSPA\Validator\Attributes\Message;
-use PhpSPA\Validator\Validatable;
+use PhpSPA\Validator\Attributes\Validatable;
 use PhpSPA\Validator\Validator;
 
-#[Message('Invalid request payload')]
-final class CreateUserDto extends Validatable
+#[Validatable]
+final class CreateUserDto
 {
    #[Optional]
    #[Email]
@@ -63,6 +62,7 @@ Validator::from($request->all(), CreateUserDto::class);
 
 ## Notes
 
+- Classes must be marked with `#[Validatable]` to be validated.
 - Optional fields should be declared nullable (e.g., `?string`).
 - Access optional fields with null-safe or null coalescing.
 - Base error message comes from `#[Message]` (default: "Invalid request payload").
