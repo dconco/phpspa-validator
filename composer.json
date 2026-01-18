@@ -1,0 +1,34 @@
+{
+	"name": "phpspa/validator",
+	"type": "library",
+	"description": "Attribute-based request validator for PhpSPA and other PHP libraries",
+	"keywords": ["php", "phpspa", "validator", "phpspa-validator"],
+	"license": "MIT",
+	"autoload": {
+		"psr-4": {
+			"PhpSPA\\": "src/"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"PhpSPA\\Validator\\Tests\\": "tests/"
+		}
+	},
+	"require-dev": {
+		"dconco/phpspa": "^2.0",
+		"phpunit/phpunit": "^11.5"
+	},
+	"authors": [
+		{
+			"name": "Dave Conco",
+			"email": "me@dconco.tech",
+			"role": "Author & Maintainer",
+			"homepage": "https://dconco.tech"
+		}
+	],
+	"prefer-stable": true,
+	"minimum-stability": "stable",
+	"scripts": {
+		"test": "vendor/bin/phpunit"
+	}
+}
