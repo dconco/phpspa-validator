@@ -67,5 +67,8 @@ Validator::from($request->all(), CreateUserDto::class);
 - Access optional fields with null-safe or null coalescing.
 - Base error message comes from `#[Message]` (default: "Invalid request payload").
 - Payload can come from pure PHP `$_POST`, PhpSPA `Request`, Laravel `Request`, Symfony `Request`, or any array/object.
+- DTO property names map to request payload keys (e.g., `$email` validates `email`).
 
 Full documentation coming soon.
+
+By the [PhpSPA framework](https://github.com/dconco/phpspa).
