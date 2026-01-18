@@ -1,6 +1,6 @@
-# PhpSPA Validator
+# PhpSPA Class Validator
 
-Attribute-based request validator for PHP (works for all PHP apps or any library).
+Class Attribute-based request validator for PHP (works for all PHP apps or any library/frameworks).
 
 ![Lines of Code](https://raw.githubusercontent.com/dconco/phpspa-validator/main/badge/loc.svg)
 
