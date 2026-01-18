@@ -117,6 +117,38 @@ final class UserController
 - Payload can come from pure PHP `$_POST`, PhpSPA `Request`, Laravel `Request`, Symfony `Request`, or any array/object.
 - DTO property names map to request payload keys (e.g., `$email` validates `email`).
 
-Full documentation coming soon.
+## Attributes reference
+
+- `#[Validatable]` (class): Marks the class as validatable.
+- `#[Message(string $message = 'Invalid request payload')]` (class): Base error message.
+- `#[Required(string $message = 'This field is required.')]`: Custom required-field message (required is inferred when no default value exists).
+- `#[RequiredIf(string $field, mixed $value, string $message = 'This field is required.')]`: Required when another field equals a value.
+- `#[Email(string $message = 'Invalid email address.')]`
+- `#[MinLength(int $value, string $message = 'Must be at least {value} characters.')]`
+- `#[MaxLength(int $value, string $message = 'Must be at most {value} characters.')]`
+- `#[Length(int $min, int $max, string $message = 'Length must be between {min} and {max}.')]`
+- `#[Min(int|float $value, string $message = 'Must be at least {value}.')]`
+- `#[Max(int|float $value, string $message = 'Must be at most {value}.')]`
+- `#[Between(int|float $min, int|float $max, string $message = 'Must be between {min} and {max}.')]`
+- `#[Regex(string $pattern, string $message = 'Invalid format.')]`
+- `#[Url(string $message = 'Invalid URL.')]`
+- `#[Uuid(string $message = 'Invalid UUID.')]`
+- `#[Enum(array $values, string $message = 'Value must be one of: {values}.')]`
+- `#[Boolean(string $message = 'Must be a boolean.')]`
+- `#[Numeric(string $message = 'Must be numeric.')]`
+- `#[Date(string $message = 'Invalid date.')]`
+- `#[Timestamp(string $message = 'Invalid timestamp.')]`
+- `#[Alpha(string $message = 'Must contain only letters.')]`
+- `#[AlphaNum(string $message = 'Must contain only letters and numbers.')]`
+- `#[Lowercase(string $message = 'Must be lowercase.')]`
+- `#[Uppercase(string $message = 'Must be uppercase.')]`
+- `#[Ip(string $message = 'Invalid IP address.')]`
+- `#[Phone(string $message = 'Invalid phone number.')]`
+- `#[Json(string $message = 'Invalid JSON.')]`
+- `#[IsArray(string $message = 'Must be an array.')]`
+- `#[MinItems(int $value, string $message = 'Must contain at least {value} items.')]`
+- `#[MaxItems(int $value, string $message = 'Must contain at most {value} items.')]`
+- `#[ValidatableType(class-string<object> $class, bool $each = false, string $message = 'Invalid nested payload.')]`:
+   Validate nested objects or arrays of objects.
 
 By the [PhpSPA framework](https://github.com/dconco/phpspa).
