@@ -140,6 +140,7 @@ final class UserController
 - `#[Timestamp(string $message = 'Invalid timestamp.')]`
 - `#[Alpha(string $message = 'Must contain only letters.')]`
 - `#[AlphaNum(string $message = 'Must contain only letters and numbers.')]`
+- `#[AllowedCharacters(string $characters, string $message = 'Contains invalid characters.')]`: Restricts allowed characters. Can be combined with `Alpha`, `AlphaNum`, or `Numeric` for additional filtering.
 - `#[Lowercase(string $message = 'Must be lowercase.')]`
 - `#[Uppercase(string $message = 'Must be uppercase.')]`
 - `#[Ip(string $message = 'Invalid IP address.')]`
@@ -152,3 +153,37 @@ final class UserController
    Validate nested objects or arrays of objects.
 
 By the [PhpSPA framework](https://github.com/dconco/phpspa).
+
+## Examples
+
+```php
+// Example: Combine AlphaNum and AllowedCharacters to allow only a-z, A-Z, 0-9, and dash
+use PhpSPA\Validator\Attributes\AlphaNum;
+use PhpSPA\Validator\Attributes\AllowedCharacters;
+use PhpSPA\Validator\Attributes\Validatable;
+
+#[Validatable]
+final class ProductCodeDto
+{
+   #[AlphaNum]
+   #[AllowedCharacters('a-zA-Z0-9-')]
+   public string $code;
+}
+
+// This will only allow codes like 'A1B2-C3', but not 'A1B2_C3' (underscore is not allowed)
+
+// Example: Username allowing alphanumeric and underscore
+use PhpSPA\Validator\Attributes\AlphaNum;
+use PhpSPA\Validator\Attributes\AllowedCharacters;
+use PhpSPA\Validator\Attributes\Validatable;
+
+#[Validatable]
+final class UsernameDto
+{
+   #[AlphaNum]
+   #[AllowedCharacters('_')]
+   public string $username;
+}
+// Accepts: user_1, my_name, test123
+// Rejects: user-name, my.name, test@123
+```

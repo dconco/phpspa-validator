@@ -7,6 +7,7 @@ namespace PhpSPA\Validator;
 use ReflectionClass;
 use PhpSPA\Validator\Attributes\Alpha;
 use PhpSPA\Validator\Attributes\AlphaNum;
+use PhpSPA\Validator\Attributes\AllowedCharacters;
 use PhpSPA\Validator\Attributes\Between;
 use PhpSPA\Validator\Attributes\Boolean;
 use PhpSPA\Validator\Attributes\Date;
@@ -263,6 +264,13 @@ final class Validator
                $nestedErrors = self::validateNested($value, $attrInstance);
                if ($nestedErrors !== null) {
                   $errors[$name] = $nestedErrors;
+               }
+               continue;
+            }
+
+            if ($attrInstance instanceof AllowedCharacters) {
+               if (!\is_string($value) || preg_match('/^[' . preg_quote($attrInstance->characters, '/') . ']+$/', $value) !== 1) {
+                  $errors[$name][] = $attrInstance->message;
                }
                continue;
             }
