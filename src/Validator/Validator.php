@@ -75,6 +75,19 @@ final class Validator
             continue;
          }
 
+         // Gather AllowedCharacters attributes for this property
+         $allowedCharsAttrs = array_filter($attributes, function($a) {
+            return $a->getName() === AllowedCharacters::class;
+         });
+         $hasAllowedChars = \count($allowedCharsAttrs) > 0;
+         $allowedExtra = '';
+         $allowedLimits = [];
+         foreach ($allowedCharsAttrs as $a) {
+            $inst = $a->newInstance();
+            $allowedExtra .= $inst->characters;
+            $allowedLimits[] = $inst;
+         }
+
          foreach ($attributes as $attr) {
             $attrInstance = $attr->newInstance();
 
@@ -191,14 +204,14 @@ final class Validator
             }
 
             if ($attrInstance instanceof MinItems) {
-               if (!\is_array($value) || $value < $attrInstance->value) {
+               if (!\is_array($value) || count($value) < $attrInstance->value) {
                   $errors[$name][] = $attrInstance->message;
                }
                continue;
             }
 
             if ($attrInstance instanceof MaxItems) {
-               if (!\is_array($value) || $value > $attrInstance->value) {
+               if (!\is_array($value) || count($value) > $attrInstance->value) {
                   $errors[$name][] = $attrInstance->message;
                }
                continue;
@@ -212,6 +225,7 @@ final class Validator
             }
 
             if ($attrInstance instanceof AlphaNum) {
+               if ($hasAllowedChars) continue; // skip AlphaNum if AllowedCharacters is present
                if (!\is_string($value) || preg_match('/^[a-zA-Z0-9]+$/', $value) !== 1) {
                   $errors[$name][] = $attrInstance->message;
                }
@@ -273,13 +287,23 @@ final class Validator
                   $errors[$name][] = $attrInstance->message;
                   continue;
                }
-
-               $pattern = '/[' . preg_quote($attrInstance->characters, '/') . ']/';
-               $matches = [];
-               preg_match_all($pattern, $value, $matches);
-
-               if (\count($matches[0]) > $attrInstance->limit) {
+               // Merge AlphaNum + all AllowedCharacters
+               $allowed = 'a-zA-Z0-9' . preg_quote($allowedExtra, '/');
+               if (preg_match('/^[' . $allowed . ']+$/', $value) !== 1) {
                   $errors[$name][] = $attrInstance->message;
+                  continue;
+               }
+               // Check limits for each AllowedCharacters attribute
+               foreach ($allowedLimits as $limitAttr) {
+                  if ($limitAttr->limit !== PHP_INT_MAX) {
+                     foreach (str_split($limitAttr->characters) as $char) {
+                        $count = substr_count($value, $char);
+                        if ($count > $limitAttr->limit) {
+                           $errors[$name][] = $limitAttr->message;
+                           break 2;
+                        }
+                     }
+                  }
                }
                continue;
             }
