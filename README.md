@@ -140,7 +140,7 @@ final class UserController
 - `#[Timestamp(string $message = 'Invalid timestamp.')]`
 - `#[Alpha(string $message = 'Must contain only letters.')]`
 - `#[AlphaNum(string $message = 'Must contain only letters and numbers.')]`
-- `#[AllowedCharacters(string $characters, string $message = 'Contains invalid characters.')]`: Restricts allowed characters. Can be combined with `Alpha`, `AlphaNum`, or `Numeric` for additional filtering.
+- `#[AllowedCharacters(string $characters, int $limit = PHP_INT_MAX, string $message = 'Contains invalid characters.')]`: Restricts allowed characters and their maximum occurrences. Can be combined with other attributes for additional filtering.
 - `#[Lowercase(string $message = 'Must be lowercase.')]`
 - `#[Uppercase(string $message = 'Must be uppercase.')]`
 - `#[Ip(string $message = 'Invalid IP address.')]`
@@ -186,4 +186,26 @@ final class UsernameDto
 }
 // Accepts: user_1, my_name, test123
 // Rejects: user-name, my.name, test@123
+
+// Example: Combine Numeric and AllowedCharacters with limits
+use PhpSPA\Validator\Attributes\Numeric;
+use PhpSPA\Validator\Attributes\AllowedCharacters;
+use PhpSPA\Validator\Attributes\Validatable;
+
+#[Validatable]
+final class PriceDto
+{
+   #[Numeric]
+   #[AllowedCharacters('.', 1)] // Allow at most one dot
+   #[AllowedCharacters('_', 3)] // Allow at most three underscores
+   public string $price;
+}
+
+// This will accept:
+// - "123.45"
+// - "123_45"
+// - "123_4.5"
+// But reject:
+// - "123..45" (more than one dot)
+// - "123____45" (more than three underscores)
 ```

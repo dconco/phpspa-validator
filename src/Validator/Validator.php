@@ -191,14 +191,14 @@ final class Validator
             }
 
             if ($attrInstance instanceof MinItems) {
-               if (!\is_array($value) || \count($value) < $attrInstance->value) {
+               if (!\is_array($value) || $value < $attrInstance->value) {
                   $errors[$name][] = $attrInstance->message;
                }
                continue;
             }
 
             if ($attrInstance instanceof MaxItems) {
-               if (!\is_array($value) || \count($value) > $attrInstance->value) {
+               if (!\is_array($value) || $value > $attrInstance->value) {
                   $errors[$name][] = $attrInstance->message;
                }
                continue;
@@ -269,7 +269,16 @@ final class Validator
             }
 
             if ($attrInstance instanceof AllowedCharacters) {
-               if (!\is_string($value) || preg_match('/^[' . preg_quote($attrInstance->characters, '/') . ']+$/', $value) !== 1) {
+               if (!\is_string($value)) {
+                  $errors[$name][] = $attrInstance->message;
+                  continue;
+               }
+
+               $pattern = '/[' . preg_quote($attrInstance->characters, '/') . ']/';
+               $matches = [];
+               preg_match_all($pattern, $value, $matches);
+
+               if (\count($matches[0]) > $attrInstance->limit) {
                   $errors[$name][] = $attrInstance->message;
                }
                continue;
