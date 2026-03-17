@@ -37,11 +37,15 @@ use PhpSPA\Validator\Attributes\Uuid;
 use PhpSPA\Validator\Attributes\Validatable;
 use PhpSPA\Validator\Attributes\ValidatableType;
 
+/**
+ * @template T of object
+ */
 final class Validator
 {
    /**
     * @param array<string, mixed>|object|null $payload
-    * @param class-string<object>|object $class
+    * @param class-string<T>|T $class
+    * @return ValidationResult<class-string<T>|T>
     */
    public static function from(array|object|null $payload, object|string $class): ValidationResult
    {
