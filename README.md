@@ -34,7 +34,7 @@ if (!$result->isValid()) {
    return $res->validationError($result->errors()); // Return error if request payload isn't valid
 }
 
-/** @var CreateUserDto $dto */ // !!! Comment is important for IDE autocompletion
+/** @var CreateUserDto $dto */ // There is no need for this doc comment, you will still get your IDE autocompletion
 $dto = $result->data();
 
 $email = $dto->email; // Optional field (nullable)
@@ -95,7 +95,6 @@ final class UserController
          ], 422);
       }
 
-      /** @var User $user */
       $user = $result->data();
 
       return response()->json([
