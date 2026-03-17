@@ -4,9 +4,15 @@ declare(strict_types=1);
 
 namespace PhpSPA\Validator;
 
+/**
+ * @template T of object
+ */
 final class ValidationResult
 {
-   /** @param array<string, mixed> $errors */
+   /**
+    * @param array<string, mixed> $errors
+    * @param class-string<T>|T|null $data
+    */
    public function __construct(
       private readonly string $message,
       private readonly array $errors,
