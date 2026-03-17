@@ -35,6 +35,7 @@ final class ValidationResult
       return $this->errors;
    }
 
+   /** @return ?T */
    public function data(): ?object
    {
       return $this->data;
