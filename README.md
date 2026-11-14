@@ -142,6 +142,10 @@ final class UserController
 - `#[AllowedCharacters(string $characters, int $limit = PHP_INT_MAX, string $message = 'Contains invalid characters.')]`: Restricts allowed characters and their maximum occurrences. Can be combined with other attributes for additional filtering.
 - `#[Lowercase(string $message = 'Must be lowercase.')]`
 - `#[Uppercase(string $message = 'Must be uppercase.')]`
+- `#[Trim(string $characters = " \t\n\r\0\x0B", string $side = Trim::BOTH)]`: Trims characters from the beginning, end, or both sides of a string before validation.
+- `#[LTrim(string $characters = " \t\n\r\0\x0B")]`: Trims characters from the left (beginning) of a string before validation.
+- `#[RTrim(string $characters = " \t\n\r\0\x0B")]`: Trims characters from the right (end) of a string before validation.
+- `#[ConvertCase(ConvertCase::LOWER)]`: Converts a string to lowercase, uppercase, or ucwords before validation. Also available as `#[NormalizeCase]`. Pass `ConvertCase::LOWER`, `ConvertCase::UPPER`, or `ConvertCase::UCWORDS`.
 - `#[Ip(string $message = 'Invalid IP address.')]`
 - `#[Phone(string $message = 'Invalid phone number.')]`
 - `#[Json(string $message = 'Invalid JSON.')]`
@@ -156,6 +160,21 @@ By the [PhpSPA framework](https://github.com/dconco/phpspa).
 ## Examples
 
 ```php
+// Example: Normalize a value before validating and assigning it to the DTO
+use PhpSPA\Validator\Attributes\ConvertCase;
+use PhpSPA\Validator\Attributes\Trim;
+use PhpSPA\Validator\Attributes\Validatable;
+
+#[Validatable]
+final class ProfileDto
+{
+   #[Trim]
+   #[ConvertCase(ConvertCase::LOWER)]
+   public string $username;
+}
+
+// "  DAVE  " is stored as "dave".
+
 // Example: Combine AlphaNum and AllowedCharacters to allow only a-z, A-Z, 0-9, and dash
 use PhpSPA\Validator\Attributes\AlphaNum;
 use PhpSPA\Validator\Attributes\AllowedCharacters;

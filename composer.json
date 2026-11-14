@@ -15,7 +15,7 @@
 		}
 	},
 	"require-dev": {
-		"dconco/phpspa": "^2.0",
+		"dconco/phpspa": "^2.1",
 		"phpunit/phpunit": "^11.5"
 	},
 	"authors": [

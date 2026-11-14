@@ -18,6 +18,7 @@ use PhpSPA\Validator\Attributes\IsArray;
 use PhpSPA\Validator\Attributes\Json;
 use PhpSPA\Validator\Attributes\Length;
 use PhpSPA\Validator\Attributes\Lowercase;
+use PhpSPA\Validator\Attributes\LTrim;
 use PhpSPA\Validator\Attributes\Max;
 use PhpSPA\Validator\Attributes\MaxItems;
 use PhpSPA\Validator\Attributes\MaxLength;
@@ -30,7 +31,11 @@ use PhpSPA\Validator\Attributes\Phone;
 use PhpSPA\Validator\Attributes\Regex;
 use PhpSPA\Validator\Attributes\Required;
 use PhpSPA\Validator\Attributes\RequiredIf;
+use PhpSPA\Validator\Attributes\RTrim;
+use PhpSPA\Validator\Attributes\ConvertCase;
+use PhpSPA\Validator\Attributes\NormalizeCase;
 use PhpSPA\Validator\Attributes\Timestamp;
+use PhpSPA\Validator\Attributes\Trim;
 use PhpSPA\Validator\Attributes\Uppercase;
 use PhpSPA\Validator\Attributes\Url;
 use PhpSPA\Validator\Attributes\Uuid;
@@ -67,6 +72,7 @@ final class Validator
          $value = $data[$name] ?? null;
 
          $attributes = $property->getAttributes();
+         $value = self::applyTransformations($value, $attributes);
 
          if (self::isEmpty($value)) {
             $requiredError = self::resolveRequiredError($attributes, $data, $name, $property);
@@ -383,6 +389,50 @@ final class Validator
       }
 
       return false;
+   }
+
+   /** @param array<int, \ReflectionAttribute> $attributes */
+   private static function applyTransformations(mixed $value, array $attributes): mixed
+   {
+      if (!\is_string($value)) {
+         return $value;
+      }
+
+      foreach ($attributes as $attribute) {
+         $instance = $attribute->newInstance();
+
+         if ($instance instanceof Trim) {
+            $value = match ($instance->side) {
+               Trim::LEFT => ltrim($value, $instance->characters),
+               Trim::RIGHT => rtrim($value, $instance->characters),
+               default => trim($value, $instance->characters),
+            };
+            continue;
+         }
+
+         if ($instance instanceof ConvertCase) {
+            $value = self::convertCase($value, $instance->case);
+         }
+      }
+
+      return $value;
+   }
+
+   private static function convertCase(string $value, string $case): string
+   {
+      if ($case === ConvertCase::LOWER) {
+         return function_exists('mb_strtolower') ? mb_strtolower($value) : strtolower($value);
+      }
+
+      if ($case === ConvertCase::UPPER) {
+         return function_exists('mb_strtoupper') ? mb_strtoupper($value) : strtoupper($value);
+      }
+
+      if ($case === ConvertCase::UCWORDS) {
+         return function_exists('mb_convert_case') ? mb_convert_case($value, MB_CASE_TITLE, 'UTF-8') : ucwords($value);
+      }
+
+      return $value;
    }
 
    private static function stringLength(mixed $value): int
